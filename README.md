@@ -50,7 +50,7 @@ uzudtevaluations/
 ```
 > 🧩 **Note:**  
 > The `wordvec/uz/` directory must contain the Uzbek **fastText word embeddings** file  
-> (`cc.uz.300.vec`), downloadable from [https://fasttext.cc/docs/en/crawl-vectors.html](https://fasttext.cc/docs/en/crawl-vectors.html).  
+> (`cc.uz.300.vec`), downloadable from [https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.uz.300.vec.gz).  
 > These pretrained vectors are required when training or fine-tuning Stanza POS or dependency models.
 
 ---

@@ -26,10 +26,14 @@ uzudtevaluations/
 │   │           ├── uz_uzudt-ud-train.conllu
 │   │           ├── uz_uzudt-ud-dev.conllu
 │   │           └── uz_uzudt-ud-test.conllu
+│   ├── wordvec/
+│   │   └── uz/
+│   │       └── cc.uz.300.vec  ← downloaded Uzbek fastText word vectors
 │   ├── saved_models/
 │   │   └── pos/
 │   │       └── uz_uzudt_xlm-roberta-base_tagger.pt
 │   └── logs/
+
 │
 ├── spacy/
 │   ├── train_uzbek_parser.py
@@ -44,6 +48,10 @@ uzudtevaluations/
 │
 └── README.md
 ```
+> 🧩 **Note:**  
+> The `wordvec/uz/` directory must contain the Uzbek **fastText word embeddings** file  
+> (`cc.uz.300.vec`), downloadable from [https://fasttext.cc/docs/en/crawl-vectors.html](https://fasttext.cc/docs/en/crawl-vectors.html).  
+> These pretrained vectors are required when training or fine-tuning Stanza POS or dependency models.
 
 ---
 

@@ -43,12 +43,6 @@ uzudtevaluations/
 │   ├── evaluate_spacy_parser.py
 │   └── results/
 │
-├── results/
-│   ├── stanza_eval/
-│   ├── spacy_eval/
-│   ├── tables/
-│   │   └── parser_comparison_table.tex
-│
 └── README.md
 ```
 > 🧩 **Note:**  
@@ -150,7 +144,20 @@ cd stanza-train
 python scripts/parse_test_with_depparse.py
 ```
 ---
+## 🧠 D. spaCy Parser for Uzbek (Experimental)
 
+In addition to Stanza, this project provides an experimental **spaCy** pipeline for Uzbek UD parsing.  
+The spaCy setup lives at the project root level:
+
+```text
+uzudtevaluations/
+  data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-*.conllu
+  spacy/
+    train_uzbek_parser.py
+    evaluate_spacy_parser.py
+    models/
+    results/
+ ```
 
 ## 📊 Parser Performance
 

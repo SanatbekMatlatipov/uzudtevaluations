@@ -5,7 +5,7 @@ from stanza.utils.conll import CoNLL
 TEST_CONLLU = "data/uz_uzudt/uz_uzudt-ud-test.conllu"
 OUT_CONLLU  = "data/uz_uzudt/uz_uzudt-ud-test.pos.system.conllu"
 
-POS_MODEL = "/Users/sanatbek/code/uzudtevaluations/stanza-train/saved_models/pos/uz_uzudt_xlm-roberta-base_tagger.pt"
+POS_MODEL = "/Users/sanatbek/code/uzudtevaluations/stanza-train/saved_models/pos/uz_uzudt-base_tagger.pt"
 
 doc_gold = CoNLL.conll2doc(TEST_CONLLU)
 

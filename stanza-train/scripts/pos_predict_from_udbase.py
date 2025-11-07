@@ -7,7 +7,7 @@ GOLD_TEST = "data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.conllu"
 OUT_SYS   = "data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.pos.system.conllu"
 
 TOKENIZER_MODEL = "saved_models/tokenize/uz_uzudt_tokenizer.pt"
-POS_MODEL       = "saved_models/pos/uz_uzudt_xlm-roberta-base_tagger.pt"
+POS_MODEL       = "saved_models/pos/uz_uzudt-base_tagger.pt"
 
 # Load gold as pretokenized doc
 doc_gold = CoNLL.conll2doc(GOLD_TEST)

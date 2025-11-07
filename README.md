@@ -31,9 +31,12 @@ uzudtevaluations/
 │   │       └── cc.uz.300.vec  ← downloaded Uzbek fastText word vectors
 │   ├── saved_models/
 │   │   └── pos/
-│   │       └── uz_uzudt_xlm-roberta-base_tagger.pt
+│   │       └── uz_uzudt-base_tagger.pt
+│   │    └── depparse/
+│   │       └── uz_uzudt_nocharlm_parser.pt
+│   │       └── uz_uzudt_nocharlm_parser_checkpoint.pt
 │   └── logs/
-
+│
 │
 ├── spacy/
 │   ├── train_uzbek_parser.py

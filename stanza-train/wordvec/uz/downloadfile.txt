@@ -1,3 +1,2 @@
-download one of these files
+download this file here
 https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.uz.300.vec.gz
-https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.uz.300.bin.gz

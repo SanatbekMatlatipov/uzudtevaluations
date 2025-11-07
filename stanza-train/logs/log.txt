@@ -44,3 +44,25 @@ tokenizer.json: 100%|███████████████████�
 2025-11-07 12:31:19 INFO: POS Tagger score: uz_uzudt 61.40
 
 ===================================================== 1st depparse log =====================================================
+(venv) PS C:\Users\User\PycharmProjects\uzudtevaluations\stanza-train> python scripts/eval.py -v `
+>>   data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.conllu `
+>>   data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.system.conllu
+
+data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.system.conllu
+Metric     | Precision |    Recall |  F1 Score | AligndAcc
+-----------+-----------+-----------+-----------+-----------
+Tokens     |    100.00 |    100.00 |    100.00 |
+Sentences  |    100.00 |    100.00 |    100.00 |
+Words      |    100.00 |    100.00 |    100.00 |
+UPOS       |    100.00 |    100.00 |    100.00 |    100.00
+XPOS       |    100.00 |    100.00 |    100.00 |    100.00
+UFeats     |    100.00 |    100.00 |    100.00 |    100.00
+AllTags    |    100.00 |    100.00 |    100.00 |    100.00
+Lemmas     |    100.00 |    100.00 |    100.00 |    100.00
+UAS        |     69.21 |     69.21 |     69.21 |     69.21
+LAS        |     53.21 |     53.21 |     53.21 |     53.21
+CLAS       |     46.32 |     46.02 |     46.17 |     46.02
+MLAS       |     44.27 |     43.98 |     44.12 |     43.98
+BLEX       |     46.32 |     46.02 |     46.17 |     46.02
+ELAS       |      0.00 |      0.00 |      0.00 |
+EULAS      |      0.00 |      0.00 |      0.00 |

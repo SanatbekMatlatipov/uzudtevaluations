@@ -144,7 +144,7 @@ cd stanza-train
 python scripts/parse_test_with_depparse.py
 ```
 ---
-## 🧠 D. spaCy Parser for Uzbek (Experimental)
+## 🧠 D. spaCy Parser for Uzbek 
 
 In addition to Stanza, this project provides an experimental **spaCy** pipeline for Uzbek UD parsing.  
 The spaCy setup lives at the project root level:

@@ -133,8 +133,21 @@ Evaluate:
 ```bash
 python evaluate_spacy_parser.py   --model output/model-best   --test ../data/udbase/UD_Uzbek-UzUDT/uz_uzudt-ud-test.conllu
 ```
-
 ---
+
+### 🧪 C. Model Testing & Evaluation (Stanza)
+
+Once you have trained models for **tokenization**, **POS tagging**, and **dependency parsing**, you can evaluate their performance on the Uzbek UD test set.
+
+#### 1️⃣ Parse the Test Set
+
+Run your trained Stanza models (tokenizer + POS + parser) on the test set:
+```bash
+cd stanza-train
+python scripts/parse_test_with_depparse.py
+```
+---
+
 
 ## 📊 Parser Performance
 

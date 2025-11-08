@@ -196,11 +196,9 @@ The following table summarizes parsing and tagging accuracies (%) on the **new (
 
 ## 👤 Author
 
-**Dr. Sanatbek Matlatipov**  
-Lead Researcher – National University of Uzbekistan  
-PhD in NLP & AI (Uzbek Language Resources)  
-📧 sanatbek.matlatipov@nuu.uz  
-🌐 [GitHub: sanatbekmatlatipov](https://github.com/sanatbekmatlatipov)
+**Sanatbek Matlatipov**  
+Researcher – National University of Uzbekistan
+📧 s.matlatipov@nuu.uz
 
 ---
 

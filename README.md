@@ -212,7 +212,7 @@ Released under **CC BY-NC 4.0 License** (research and education only).
 >   title={UzUDT: ....},
 >   author={Matlatipov, Sanatbek},
 >   year={....},
->   booktitle={LREC–COLING 2025 Proceedings},
+>   booktitle={Proceedings},
 >   organization={ELRA}
 > }
 > ```

@@ -212,3 +212,4 @@ stanza-train/data/wordvec/word2vec/Uzbek/cc.uz.300.vec
 .gitignore
 stanza-train-backup.tgz
 saved_models/depparse/uz_uzudt_nocharlm_parser.pt
+saved_models/pos/uz_uzudt-base_tagger.pt

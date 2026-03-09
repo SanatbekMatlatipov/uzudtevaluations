@@ -1,10 +1,5 @@
 # 🇺🇿 UzUDT Evaluations
 
-This repository contains **training, evaluation, and analysis code** for the paper:
-
-> **UzUDT: Uzbek Universal Dependencies Treebank** (LREC 2026)
-> Sanatbek Matlatipov, Mersaid Aripov — National University of Uzbekistan
-
 We present a new gold-standard UD treebank for Uzbek containing **684 sentences (7,582 tokens)** from literary texts, with full manual morphosyntactic annotation. This repo provides the complete evaluation framework for comparing:
 
 - **[Stanza](https://stanfordnlp.github.io/stanza/)** — graph-based BiLSTM + DeepBiaffine parser

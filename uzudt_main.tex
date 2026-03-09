@@ -1,0 +1,381 @@
+% LREC 2026 Example; 
+% LREC Is now using templates similar to the ACL ones. 
+\documentclass[10pt, a4paper]{article}
+
+\usepackage[final]{lrec2026} % this is the new style
+\usepackage{booktabs}
+% the 'review' option anonymizes the paper following submission guideline
+% the 'final' option produces the camera ready version (non anonymized)
+% default version is 'final', so use review option for submission
+\usepackage{graphicx} % add this in your preamble if not already there
+\usepackage{tikz-dependency}
+\usepackage{orcidlink}
+\usepackage{dblfloatfix}
+
+\title{UzUDT: Uzbek Universal Dependencies Treebank}
+
+\name{Sanatbek Matlatipov\textsuperscript{1}\orcidlink{0000-0000-0000-0000}, Mersaid Aripov\textsuperscript{1}\orcidlink{0000-0000-0000-0000}} 
+
+\address{\textsuperscript{1}National University of Uzbekistan named after Mirzo Ulugbek \\
+         University street, 4th house, Tashkent, Uzbekistan \\
+         \{s.matlatipov, mirsaid.aripov\}@nuu.uz}
+
+\abstract{
+In this paper, we present a new Universal Dependencies treebank for Uzbek language(UzUDT) developed as a
+gold-standard resource with full manual annotation. The treebank includes 684 sentences (7,582 tokens) from Uzbek literary texts, and is larger and more domain-diverse than the existing Uzbek UD treebank. The corpus was developed through rigorous multi-annotator adjudication, achieving very high inter-annotator agreement (multi-rater agreement coefficients $>0.90$) across lemmatization, POS tagging, and morphological features. Alongside comprehensive corpus profiling, we establish robust computational baselines by evaluating graph-based (Stanza) and transition-based (spaCy) parsing architectures using both static and monolingual contextual embeddings. Our evaluations reveal a critical architectural trade-off for low-resource agglutinative parsing: joint transition-based models excel at morphosyntactic tagging, whereas graph-based models remain strictly superior for resolving complex structural dependencies. Furthermore, we demonstrate that cross-treebank data augmentation yields substantial, synergistic accuracy gains, achieving a peak Universal Part-of-Speech (UPOS) tagging accuracy of 89.18\%, a Labeled Attachment Score (LAS) of 63.81\%, and a morphological feature accuracy of 71.09\%. The resource provides much-needed high-quality treebank for Uzbek to assist in developing better NLP tools and to enable linguistic research in the low-resource language.
+ \newline \Keywords{Universal Dependencies; dependency parsing; Uzbek} }
+
+\begin{document}
+
+\maketitleabstract
+
+\section{Introduction}
+\label{sec:introduction}
+Uzbek is a low-resource Turkic language and had very few core NLP resources until recently\cite{veitsman-hartmann-2025-recent}. In particular, dependency treebanks were rare in Uzbek. The first Uzbek UD treebank, UD\_Uzbek-UT\cite{Akhundjanova-Talamo}, was released recently and provides 500 sentences (5,930 tokens) from news and fiction domains, establishing an important initial foundation for Uzbek dependency parsing.
+The first Uzbek UD treebank (Uzbek-UT) \cite{Akhundjanova-Talamo} contains 500 sentences (5,930 tokens) from news and fiction domains and constitutes an important initial contribution to Uzbek dependency parsing. Apart from that preliminary attempt, Uzbek had very little computational resources: an old morphological parser was built in Prolog\cite{Matlatipov2009} and rule-based tools (e.g., UzbekTagger by \cite{sharipov-et-all,10615061} ) and a morphological analyzer (UzMorphAnalyzer by \cite{ulugbek-morph}, \cite{nilufar-abdurakhmon}, \citelanguageresource{10.1007/978-3-030-63119-2_59}) have been recently created. However, publicly available Uzbek UD resources remain small and genre-limited, which constrains robust tagger/parser training and cross-domain evaluation. To cover the resource gap, we have created a gold-standard UD treebank for Uzbek larger in size and with a different domain scope than the current Uzbek-UT treebank \cite{Akhundjanova-Talamo}. Our treebank contains 684 sentences; this larger and more diverse treebank can improve the robustness of Uzbek language models and parsers and better support downstream applications (e.g., literary NLP tools, information extraction, and educational technologies).\\
+In summary, we have made the following contributions:
+
+\begin{itemize}
+    \item \textbf{New Uzbek UD Treebank:} We present a new Uzbek Universal Dependencies (UD) treebank containing 684 sentences (approximately 7.6k tokens) from literature texts, manually annotated with full morphosyntactic structure. To our knowledge, UzUDT is currently the largest publicly released Uzbek UD treebank by sentence count, and it complements Uzbek-UT by covering a different genre.
+    
+    \item \textbf{High-Quality Annotation Process:} The annotation was carried out by six annotators with rigorous agreement checks, achieving extremely high agreement between annotators (multi-rater agreement coefficients $>0.90$; Table~\ref{tab:iaa_6_annotators}) on core annotations. We document our annotation process using the INCEpTION tool\cite{klie-etal-2018-inception} and explain how disagreements were resolved to produce a gold-standard dataset.
+    
+    \item \textbf{Comprehensive Data Analysis:} We conduct a detailed analysis of the treebank, including token statistics, vocabulary statistics, frequency statistics of POS tags, and frequencies of morphological features and dependency relations. We compare these statistics with those from the previous Uzbek UD treebank to highlight differences resulting from the larger dataset.
+    
+    \item \textbf{Parse Evaluation Tests:} To establish robust baselines for low-resource agglutinative parsing, we evaluate and compare two distinct architectural paradigms: a graph-based pipeline (Stanza\cite{qi-etal-2020-stanza}) and a transition-based pipeline (spaCy\cite{Honnibal2017-lw}). Furthermore, we analyze the impact of representation learning by comparing static embeddings (FastText\cite{bojanowski-etal-2017-enriching}) against monolingual contextual embeddings (TahrirchiBERT\citetlanguageresource{Mamasaidov2023TahrirchiBERT}) across both standalone and merged treebank configurations. We report comprehensive metrics including Labeled Attachment Score (LAS), Unlabeled Attachment Score (UAS), and morphosyntactic tagging accuracy. Our findings demonstrate that while joint transition-based models excel at tagging, graph-based models are vastly superior for structural parsing, and cross-treebank augmentation yields substantial accuracy gains. The training and testing code, along with guidelines, are publicly available in our GitHub repository\footnote{https://github.com/SanatbekMatlatipov/uzudtevaluations}.
+\end{itemize}
+Our hope is that the new treebank will stimulate further Uzbek NLP work. It provides a much-needed resource to construct better taggers and parsers and can serve as a foundation for multilingual and cross-lingual work with Uzbek. We release the treebank under an open license to contribute to the growing global collection of Universal Dependencies resources\footnote{https://github.com/UniversalDependencies/UD\_Uzbek-UzUDT/tree/dev}. UzUDT treebank is distributed under the Creative Commons Attribution–ShareAlike 4.0 license (CC BY-SA 4.0).
+  
+\section{Methodology}
+\label{sec:methodology}
+\subsection{Data collection}
+\label{sec:data_collection}
+We compiled UzUDT by selecting isolated sentences from the works \textit{Kun shundan boshlanadi} and \textit{Maqar}.
+These sentences are included under an explicit non-exclusive permission granted by the author and copyright holder,
+allowing sentence-level selection, UD-style linguistic \cite{de-marneffe-etal-2021-universal} annotation, model training/evaluation, and open distribution
+of the selected sentences as part of the UzUDT release (see \ref{sec:ethics}). We restricted selection to self-contained sentences in the Uzbek Latin script, avoiding heavily dialectal or non-standard forms. The resulting corpus contains 684 sentences (7,582 tokens) with an average length of approximately 11 tokens per sentence. We split the data into 451/45/188 sentences for train/dev/test, respectively. Figure \ref{fig:main_dependency_tree} illustrates a complete dependency graph extracted from our dataset, exhibiting the rich morphological and syntactic UD annotations required for complex Uzbek constructions, such as serial verbs (\texttt{compound:svc}) and chained modifiers.
+\begin{figure*}[htbp]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{dependency}[theme = default]
+   \begin{deptext}[column sep=0.8em]
+      Aslida \& bunday \& tadqiqotlarda \& biror \& sheva \& yoki \& lahjaning \& adabiy \& tildan \& farqidan \& oldin \& umumiyligini \& ko‘rsatib \& berish \& kerak \& . \\
+      ADV \& DET \& NOUN \& DET \& NOUN \& CCONJ \& NOUN \& ADJ \& NOUN \& NOUN \& ADP \& NOUN \& VERB \& VERB \& AUX \& PUNCT \\
+   \end{deptext}
+   \deproot{14}{root}
+   \depedge{14}{1}{discourse}
+   \depedge{3}{2}{det}
+   \depedge{14}{3}{obl}
+   \depedge{5}{4}{det}
+   \depedge{10}{5}{nmod}
+   \depedge{7}{6}{cc}
+   \depedge{5}{7}{conj}
+   \depedge{9}{8}{amod}
+   \depedge{10}{9}{nmod}
+   \depedge{14}{10}{obl}
+   \depedge{10}{11}{case}
+   \depedge{14}{12}{obj}
+   \depedge{14}{13}{compound:svc}
+   \depedge{14}{15}{aux}
+   \depedge{14}{16}{punct}
+\end{dependency}
+}
+\caption{A complete syntactic dependency tree (UD annotation) extracted from the UzUDT corpus. This example illustrates the rich morphology characteristic of the Uzbek language, specifically highlighting chained case markers and serial verb (\texttt{compound:svc}) constructions.}
+\label{fig:main_dependency_tree}
+\end{figure*}
+
+
+\subsection{Annotation Process}
+The annotation followed the Universal Dependencies (UD) guidelines \cite{de-marneffe-etal-2021-universal} for tokenization, lemmatization, POS tagging, morphological features, and dependency relations.
+We followed the Uzbek-specific UD documentation and contributed to maintaining the Uzbek UD feature inventory
+(e.g., PronType; \url{https://universaldependencies.org/uz/feat/PronType.html}).
+We pre-segmented sentences into tokens according to UD rules, so annotators did not perform tokenization.
+Annotation was carried out in the INCEpTION platform \cite{klie-etal-2018-inception} with custom layers aligned to UD fields.
+The team consisted of six annotators (four Uzbek linguists and two NLP engineers), who completed an initial training phase by annotating a shared calibration subset and discussing Uzbek-specific UD cases (e.g., agglutinative case marking and null copulas).
+
+Inter-annotator agreement (IAA)\cite{richie-etal-2022-inter} was measured on the shared calibration subset at the token level for (i) lemma,
+(ii) UPOS, and (iii) complete morphological feature bundles (UFeats, evaluated as exact-match labels per token).
+We report multi-rater agreement using Fleiss' $\kappa$\cite{WANG2025100248, 1972-05083-001} and Krippendorff's $\alpha$\cite{GONZALEZPRIETO2023111707} (nominal), observing very high agreement across the three layers (Table~\ref{tab:iaa_6_annotators}).
+We treat all labels as nominal and compute agreement at the token level; for UFeats we require an exact match of the complete feature bundle per token.
+The full dataset was then annotated in a double-annotation setting (each sentence independently annotated by two annotators). Disagreements were identified using INCEpTION's comparison view and resolved in regular adjudication meetings, with a senior linguist acting as the final arbiter in difficult cases. The resulting treebank is a single gold-standard annotation per sentence, exported in CoNLL-U format.
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lcc}
+\toprule
+\textbf{Annotation layer} & \textbf{Fleiss' $\kappa$} & \textbf{Krippendorff's $\alpha$} \\
+\midrule
+Lemma                 & 0.952 & 0.946 \\
+UPOS                               & 0.937 & 0.941 \\
+UFeats        & 0.908 & 0.899 \\
+\bottomrule
+\end{tabular}
+\caption{Multi-rater inter-annotator agreement. Scores are token-level agreement coefficients (nominal)}
+\label{tab:iaa_6_annotators}
+\end{table}
+
+\subsection{Data Analysis}
+\label{sec:data_analysis}
+
+Following the completion of the annotation process, we conducted a rigorous linguistic and statistical diagnostic of UzUDT using the official Universal Dependencies validation toolkit. To contextualize our contribution, we contrast UzUDT against the existing Uzbek-UT treebank, focusing on how domain divergence (literary vs. news/fiction) influences morphological and syntactic distributions. UzUDT passes the official UD validation checks without errors, indicating a consistent CoNLL-U release compliant with the UD guidelines.
+
+\paragraph{Corpus Statistics and Lexical Diversity}
+Table \ref{tab:main_corpus_stats} summarizes the high-level linguistic statistics. UzUDT contains 684 sentences and 7,582 surface tokens (yielding an average of 11.1 tokens per sentence). While UzUDT provides a larger absolute volume of tokens than the previous treebank, it exhibits a lower Type-Token Ratio (TTR)\cite{Richards_1987} of 0.409 compared to UT's 0.571. This lower lexical sparsity is characteristic of narrative prose, which heavily reuse core vocabulary, whereas the news domain in Uzbek-UT inherently introduces a broader spectrum of unique named entities.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Linguistic Metric} & \textbf{UzUDT} & \textbf{Uzbek-UT} \\
+\midrule
+\textbf{Corpus Size} & & \\
+Sentences & 684 & 500 \\
+Tokens (Surface) & 7,582 & 5,930 \\
+Type-Token Ratio (Forms) & 0.409 & 0.571 \\
+Avg. Tokens / Sentence & 11.1 & 11.9 \\
+\midrule
+\textbf{Key POS Proportions (\%)} & & \\
+PRON (Pronouns) & 6.0\% & 3.3\% \\
+PROPN (Proper Nouns) & 0.3\% & 5.2\% \\
+\midrule
+\textbf{Key Syntactic Relations (\%)} & & \\
+\texttt{advcl} (Adverbial Clause) & 5.9\% & 1.8\% \\
+\texttt{compound:lvc} (Light Verb) & 0.3\% & 3.6\% \\
+\bottomrule
+\end{tabular}
+\caption{Comparative linguistic statistics highlighting domain-driven differences between the new UzUDT (Literary) and the previous Uzbek-UT (News/Fiction) treebanks.}
+\label{tab:main_corpus_stats}
+\end{table}
+
+\paragraph{Part-of-Speech Distribution}
+The universal part-of-speech (UPOS) distributions strongly reflect the underlying text genres. Nouns (33.3\%) and verbs (20.9\%) remain the dominant categories in UzUDT. However, the literary nature of our data yields a significantly higher proportion of pronouns (6.0\% vs. 3.3\%). Conversely, proper nouns (\texttt{PROPN}) are extremely sparse in our dataset (0.3\%) compared to the news-heavy Uzbek-UT corpus (5.2\%). A comprehensive UPOS breakdown is provided in Appendix \ref{sec:appendix_upos}.
+
+\paragraph{Morphological Richness}
+Uzbek is a highly agglutinative language, and UzUDT captures this complexity with a richer morphosyntactic inventory than Uzbek-UT. Notably, our annotation explicitly captures possessor agreement on nouns (\textsc{Number[psor]} and \textsc{Person[psor]}) and distinguishes firsthand versus non-firsthand evidentiality (\textsc{Evident=Fh/Nfh})—a typologically crucial Turkic feature that was previously unannotated. Furthermore, UzUDT provides finer granularity in verbal aspect, capturing \textsc{Habitual}, \textsc{Imperfective}, and \textsc{Perfective} distinctions alongside the standard \textsc{Progressive} form. The full morphological inventory is documented in Appendix \ref{sec:appendix_morph}.
+
+\paragraph{Syntactic Dependencies}
+While core arguments (\texttt{nsubj}, \texttt{obj}, \texttt{obl}) maintain stable frequencies across both datasets, mid-frequency relations expose structural disparities. Literary Uzbek relies heavily on complex converb chains (using suffixes like \textit{-ib} or \textit{-gach}) to link sequential actions. Consequently, adverbial clauses (\texttt{advcl}) are more than three times as frequent in UzUDT (5.9\%) as in the news corpus (1.8\%). Figure \ref{fig:tikz_advcl} illustrates a typical converb construction extracted from our test set. In contrast, the news domain relies heavily on light-verb constructions (\texttt{compound:lvc}), which appear at ten times the frequency in UT. These complementary distributions underscore the necessity of merging these treebanks to train robust, domain-agnostic parsers. The complete comparative dependency inventory is detailed in Appendix \ref{sec:appendix_deprel}.
+
+\begin{figure}[ht]
+\centering
+\begin{dependency}[theme = default]
+   \begin{deptext}[column sep=1.2em]
+      U \& kulib \& gapirdi \& . \\
+      PRON \& VERB \& VERB \& PUNCT \\
+   \end{deptext}
+   \deproot{3}{root}
+   \depedge{3}{1}{nsubj}
+   \depedge[edge style={red, thick}]{3}{2}{advcl}
+   \depedge{3}{4}{punct}
+\end{dependency}
+\caption{A simplified dependency tree demonstrating an adverbial clause (\texttt{advcl}) driven by a converb (\textit{kulib} ``smilingly''). This syntactic structure is highly prevalent in the UzUDT literary texts.}
+\label{fig:tikz_advcl}
+\end{figure}
+\paragraph{Cross-Treebank Annotation Divergence}
+While data augmentation significantly improves overall parsing accuracy, merging heterogeneous treebanks introduces annotation friction. Our post-evaluation error analysis reveals that morphological features unique to a single treebank's guidelines suffer from severe recall degradation when trained on the merged dataset. For example, possessor agreement (\textsc{Number[psor]}) and evidentiality (\textsc{Evident}) are explicitly annotated in UzUDT but absent in UT. Consequently, the merged transition-based model yields a low recall for \textsc{Number[psor]} (43.7\%) and entirely fails to predict \textsc{Evident} (0.0\%). The model struggles to reconcile the explicit presence of these features in UzUDT with their systematic absence in UT, highlighting that future cross-treebank augmentation in low-resource settings requires rigorous harmonization of morphological guidelines.
+
+\section{Experiments}
+\label{sec:experiments}
+
+To assess the usability of the new treebank and establish robust baselines, we evaluated morphosyntactic tagging and dependency parsing under varying low-resource constraints. We compared representation strategies (static vs. contextual) and architectural paradigms (graph-based vs. transition-based) strictly on UzUDT, and on a merged dataset of UzUDT and UD\_Uzbek-UT.
+
+\paragraph{Experimental Setup:}
+Our primary pipeline utilizes a modified Stanza framework featuring a shared BiLSTM\cite{kiperwasser-goldberg-2016-simple} encoder. Tagging (UPOS/XPOS/UFeats) is handled by a softmax multi-task head, while syntax is predicted via a DeepBiaffine graph-based parser. We trained this architecture using Adam ($\beta=(0.9, 0.999)$), a learning rate of $3 \times 10^{-3}$, a batch size of 5,000 tokens, and a dropout of 0.33, comparing static FastText embeddings against contextual TahrirchiBERT subwords. We obtain token-level contextual embeddings from TahrirchiBERT by aligning subwords to UD tokens and applying a fixed pooling rule (last-subword or mean pooling); these token representations are then used as inputs to Stanza’s tagger and biaffine parser across all contextual experiments. The training dynamics and convergence trajectories for this Stanza-based joint morphosyntactic tagger and dependency parser are illustrated in \textbf{Figure \ref{fig:tagger_curves}} and \textbf{Figure \ref{fig:parser_curves}}, respectively.
+
+To provide a contrasting baseline, we additionally trained a joint, end-to-end transition-based pipeline (spaCy) featuring an arc-eager parser and the identical TahrirchiBERT encoder. The spaCy model was optimized using Adam with an initial learning rate of $5 \times 10^{-5}$ (linear decay) and a compounding batch size (100--1,000 words). Both architectures utilized early stopping evaluated on the development set.
+\paragraph{Reproducibility.}
+All experiments were run with fixed random seeds $\{13, 21, 42\}$; we report the run achieving the best development-set score, and select the final checkpoint by development-set performance.
+Training and evaluation were run on a single NVIDIA RTX A6000 GPU (48\,GB VRAM) with CUDA 12.4. We use Stanza v1.4.0, spaCy v3.8.11, PyTorch v2.6.0+cu124, and Transformers v4.49.0. Complete environment details and run configurations are provided in the accompanying repository and Weights \& Biases logs.
+\paragraph{Results:}
+Table \ref{tab:parser_performance} details the Universal Part-of-Speech (UPOS), Morphological Features (UFeats), Unlabeled Attachment Score (UAS), and Labeled Attachment Score (LAS) across the test sets.
+
+\begin{table}[ht]
+\centering
+\small % Sets a readable, slightly smaller font natively
+\setlength{\tabcolsep}{3.5pt} % Reduces the whitespace between columns
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Parser} & \textbf{Emb.} & \textbf{Data} & \textbf{UPOS} & \textbf{UFeat} & \textbf{UAS} & \textbf{LAS} \\
+\midrule
+Stanza & FT & UzUDT & 79.19 & 66.61 & 69.57 & 51.24 \\
+Stanza & FT & Merged & 80.26 & 66.98 & 72.27 & 62.40 \\
+Stanza & TB & UzUDT & 82.45 & 65.37 & 72.05 & 54.19 \\
+Stanza & TB & Merged & 85.08 & \textbf{71.09} & \textbf{72.39} & \textbf{63.81} \\
+\midrule
+spaCy  & TB & UzUDT & 86.50 & 50.55 & 67.72 & 45.35 \\
+spaCy  & TB & Merged & \textbf{89.18} & 65.48 & 66.81 & 47.11 \\
+\bottomrule
+\end{tabular}
+\caption{Parsing and tagging performance comparing architectures and representations. Abbreviations -- Emb: FT (FastText), TB (TahrirchiBERT). Data: Merged (UzUDT + Uzbek-UT). Stanza utilizes a graph-based parser, while spaCy utilizes a transition-based parser.}
+\label{tab:parser_performance}
+\end{table}
+The results reveal three critical findings for low-resource agglutinative parsing. First, replacing static FastText\cite{bojanowski-etal-2017-enriching, joulin2016fasttext} embeddings with TahrirchiBERT yields consistent improvements across metrics. Second, cross-treebank data augmentation provides the most substantial boost to structural parsing; expanding the training data improved the Stanza graph-based LAS by roughly 10 to 11 points.
+
+Finally, comparing architectural paradigms reveals a distinct trade-off. The joint transition-based pipeline (spaCy) excels at basic tagging, achieving the highest UPOS (89.18\%) on the merged data. This success is driven by its end-to-end objective, which reinforces tagging signals through the parser loss; furthermore, augmented data triggered a massive +14.93 point jump in its morphological feature (UFeats) accuracy. In contrast, the graph-based parser (Stanza) vastly outperforms the transition-based approach on labeled structural parsing (LAS 63.81\% vs. 47.11\%). This 16.70-point advantage demonstrates that graph-based global decoding is better equipped to resolve complex, long-distance dependencies in head-final (SOV) Uzbek syntax.\cite{10.1007/978-3-031-05328-3_6}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have published UzUDT, a new gold-standard Universal Dependencies treebank for the Uzbek language containing 684 sentences from literary texts. It significantly enhances the availability of Uzbek annotated data in terms of domain variety and size. with a rigorous annotation process executed through the INCEpTION platform, we achieved very high multi-rater agreement (Fleiss' $\kappa$ and Krippendorff's $\alpha$ $>0.90$) for lemma, UPOS, and full morphological feature bundles. Our analysis demonstrates that UzUDT provides comprehensive coverage of Uzbek’s rich agglutinative morphology and complex syntactic structures, such as converb-driven adverbial clauses.
+To establish robust computational baselines, we evaluated multiple parsing paradigms. Our findings reveal a critical architectural trade-off for low-resource agglutinative languages: while joint transition-based pipelines (spaCy) excel at morphosyntactic tagging by leveraging end-to-end objective reinforcement, graph-based parsers (Stanza) remain vastly superior for resolving complex, long-distance structural dependencies (LAS). Also, we demonstrated that merging heterogeneous treebanks and upgrading to monolingual contextual representations yields substantial accuracy gains, provided that cross-treebank annotation divergences are carefully managed.
+
+
+\paragraph{Future Work.}
+ We will scale the resource beyond literary text by expanding to additional genres (e.g., news, web text, and social media) using model-assisted annotation: our strongest graph-based parser will be used to pre-annotate new data, with annotators focusing on correction and adjudication.
+Moreover, we will investigate LLM-assisted syntactic annotation\cite{schroeder-etal-2025-just} as an alternative scaling strategy, comparing (i) conventional neural parsers trained on UD data and (ii) instruction-tuned LLM pipelines that generate UD-style analyses and can be refined with human feedback.
+Quality control will combine automatic UD validation with LLM-as-a-judge\cite{10.1145/3701716.3715265} scoring and selective human review to measure accuracy, consistency, and annotation cost at scale.
+Ultimately, our goal is to enable robust, publicly available Uzbek models in widely used NLP toolkits, including Stanza and spaCy.
+\section{Ethics Statement}
+\label{sec:ethics}
+UzUDT is released as an open research resource for Uzbek NLP with attention to copyright and responsible data use.
+The corpus includes sentence-level material from the literary works \textit{Kun shundan boshlanadi} and \textit{Maqar}.
+We obtained signed written permission from the author and copyright holder to select sentences from these works, annotate them with UD morphology and syntax, use them for model training and evaluation, and distribute the selected sentences as part of the UzUDT release with appropriate attribution. A copy of the permission agreement can be provided to the organizers and reviewers upon request.
+
+\section{Acknowledgements}
+The authors gratefully acknowledge Elmurod Kuriyozov, Komilova Madinabonu, and Matyoqubova Shaydo for their assistance with dataset annotation.
+% --- Standard Bibliography ---
+\section{Bibliographical References}
+\label{sec:reference}
+\bibliographystyle{lrec2026-natbib}
+\bibliography{lrec2026-example}
+
+% --- Language Resources Bibliography ---
+\section{Language Resource References}
+\label{lr:ref}
+\bibliographystylelanguageresource{lrec2026-natbib}
+\bibliographylanguageresource{languageresource}
+
+% --- Force another new page before the Appendices begin ---
+
+\appendix
+\section{Comprehensive POS Distribution}
+\label{sec:appendix_upos}
+
+Table \ref{tab:appendix_upos} provides the complete distributional comparison of UPOS tags between UzUDT and the previous UD\_Uzbek-UT treebank. 
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrr|rr}
+\toprule
+& \multicolumn{2}{c|}{\textbf{UzUDT (Ours)}} & \multicolumn{2}{c}{\textbf{Uzbek-UT}} \\
+\textbf{UPOS} & \textbf{Count} & \textbf{\%} & \textbf{Count} & \textbf{\%} \\
+\midrule
+NOUN & 2,526 & 33.3 & 2,152 & 36.3 \\
+VERB & 1,585 & 20.9 & 987 & 16.6 \\
+PUNCT & 1,571 & 20.7 & 860 & 14.5 \\
+ADJ & 522 & 6.9 & 484 & 8.2 \\
+PRON & 458 & 6.0 & 193 & 3.3 \\
+PROPN & 26 & 0.3 & 308 & 5.2 \\
+ADV & 230 & 3.0 & 203 & 3.4 \\
+NUM & 184 & 2.4 & 214 & 3.6 \\
+ADP & 120 & 1.6 & 184 & 3.1 \\
+DET & 103 & 1.4 & 103 & 1.7 \\
+CCONJ & 87 & 1.1 & 104 & 1.8 \\
+AUX & 88 & 1.2 & 79 & 1.3 \\
+PART & 43 & 0.6 & 36 & 0.6 \\
+INTJ & 23 & 0.3 & 6 & 0.1 \\
+SCONJ & 9 & 0.1 & 9 & 0.2 \\
+X & 7 & 0.1 & 7 & 0.1 \\
+SYM & 0 & 0.0 & 1 & 0.0 \\
+\bottomrule
+\end{tabular}
+\caption{Full UPOS distribution comparing the two Uzbek UD treebanks.}
+\label{tab:appendix_upos}
+\end{table}
+
+
+\section{Morphological Feature Inventory}
+\label{sec:appendix_morph}
+Morphology with unique features. 
+\begin{table}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{3pt} % Tightens the white space between columns
+\begin{tabular}{@{} l p{3.2cm} p{2.6cm} @{}} 
+\toprule
+\textbf{Category} & \textbf{Values in UzUDT} & \textbf{Status vs. Uzbek-UT} \\
+\midrule
+Aspect & Hab, Imp,\newline Perf, Prog & UzUDT has 3 unique \\
+Case & Abl, Acc, Dat, \newline Gen, Loc, Nom & Identical \\
+Evident & Fh, Nfh & \textbf{Unique to UzUDT} \\
+Mood & Cnd, Des, Imp, \newline Ind,  Int, Opt, Pot & UzUDT has \textit{Des} \\
+Number & Plur, Sing & Identical \\
+Number[psor] & Plur; \newline Plur,Sing; Sing & \textbf{Unique to UzUDT} \\
+Person & 1, 2, 3 & Identical \\
+Person[psor] & 1, 2, 3 & \textbf{Unique to UzUDT} \\
+Tense & Fut, Past, Pres & Identical \\
+VerbForm & Conv, Fin, Inf, \newline Part, Vnoun & Identical \\
+Voice & Act, Pass & UzUDT has \textit{Act} \\
+PronType & Dem, Ind, Int, \newline Neg, Prs, Rcp,  \newline Rel, Tot & Identical \\
+Polarity & Neg, Pos & UzUDT has \textit{Pos} \\
+Reflex & Yes & Identical \\
+Poss & Yes & Identical \\
+\bottomrule
+\end{tabular}
+\caption{Primary morphological feature categories present in UzUDT.}
+\label{tab:appendix_morph}
+\end{table}
+
+
+\section{Dependency Relation Inventory}
+\label{sec:appendix_deprel}
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{lrr|rr}
+\toprule
+& \multicolumn{2}{c|}{\textbf{UzUDT (Ours)}} & \multicolumn{2}{c}{\textbf{Uzbek-UT}} \\
+\textbf{Relation} & \textbf{Count} & \textbf{\%} & \textbf{Count} & \textbf{\%} \\
+\midrule
+punct & 1,571 & 20.7 & 860 & 14.5 \\
+obl & 720 & 9.5 & 602 & 10.1 \\
+nsubj & 720 & 9.5 & 540 & 9.1 \\
+amod & 452 & 6.0 & 338 & 5.7 \\
+advcl & 444 & 5.9 & 106 & 1.8 \\
+obj & 418 & 5.5 & 251 & 4.2 \\
+compound & 265 & 3.5 & 290 & 4.9 \\
+nmod & 252 & 3.3 & 350 & 5.9 \\
+advmod & 216 & 2.8 & 238 & 4.0 \\
+conj & 200 & 2.6 & 208 & 3.5 \\
+nmod:poss & 189 & 2.5 & 142 & 2.4 \\
+det & 183 & 2.4 & 103 & 1.7 \\
+xcomp & 139 & 1.8 & - & - \\
+acl & 137 & 1.8 & 133 & 2.2 \\
+nummod & 131 & 1.7 & 160 & 2.7 \\
+dep & 125 & 1.6 & 0 & 0.0 \\
+cc & 109 & 1.4 & 109 & 1.8 \\
+ccomp & 94 & 1.2 & - & - \\
+compound:lvc & 21 & 0.3 & 215 & 3.6 \\
+flat & 11 & 0.1 & 106 & 1.8 \\
+\bottomrule
+\end{tabular}
+\caption{Top syntactic dependency relations highlighting structural differences.}
+\label{tab:appendix_deprel}
+\end{table}
+
+% Remove \clearpage from before your section
+\clearpage % Forces a fresh page so the text and images start together
+
+% Combining both images into one float prevents LaTeX from breaking them apart
+\begin{figure*}[t] 
+    \centering
+    % Image 1
+    \includegraphics[width=0.95\textwidth]{tagger.png}
+    \caption{Training dynamics for the joint morphosyntactic tagger.}
+    \label{fig:tagger_curves}
+    
+    \vspace{0.75cm} % Adds breathing room between the graphs
+    
+    % Image 2
+    \includegraphics[width=0.95\textwidth]{parser.png}
+    \caption{Training dynamics for the dependency parser.}
+    \label{fig:parser_curves}
+\end{figure*}
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
